@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		
+		<!-- meta使用viewport以确保页面可自由缩放 -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- 引入 jQuery Mobile 样式 -->
+		<link rel="stylesheet" href="http://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.css">
+		
+		<!-- 引入 jQuery 库 -->
+		<script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+		
+		<!-- 引入 jQuery Mobile 库 -->
+		<script src="http://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+		
+		<script src="./js/Bmob-2.2.2.min.js"></script>
+
+		<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+		<title>
+			
+		</title>
+	</head>
+	<body>
+		<div data-role="page">
+		
+		  <div data-role="header">
+		    <h1>查询最新密码</h1>
+		  </div>
+		
+		
+		  <div data-role="main" class="ui-content">
+		  <div class="ui-field-contain">
+		  <!--<img src="./img/ad.png" style="width: 120px; height: 120px;">-->
+		  
+		  <input type="text" id="orderid" placeholder="请输入查询码">
+		  </div>
+		  
+		  <button  onclick="qr()">点两下，查询</button>
+		  
+		  <div id="vue_det" v-if="vis">
+		      <h6> {{details}}</h6>
+			  
+		  </div>
+			
+		  </div>
+		  
+		  
+		  <div data-role="footer">
+		<!--    <h2>Grammarly Premium 10天 9块9</h2>
+			<h2>Turnitin国际版(不限字数) 1篇  5块9</h2>  -->
+		  </div>
+		 
+		</div>
+		<script>
+			//$("#vue_det").visible = false
+			
+			var vm = new Vue({
+						el: '#vue_det',
+						data: {
+							name: "",
+							time: "",
+							details: "",
+							stime: "",
+							vis : false
+						}
+					})
+					
+			var newDate ="";
+			
+			function qr(){
+				Bmob.initialize("88f749b1acc7bc68", "zhuzhu");
+				vm.vis = false;
+				// vm.stime = "";
+				// vm.name="";
+				// vm.time="";
+				// vm.details="";
+				
+				// check time
+				const query = Bmob.Query("User");
+				var orderid = $('#orderid').val()
+				query.equalTo("orderid", "==", orderid);
+				query.order("-createdAt");
+				query.find().then(res => {
+					if (res.length==0){
+						vm.details = "查询码错误，请输入正确的查询码"
+						vm.time="";
+					} else{
+						var tmp = res[0].Time
+						tmp = tmp.iso;
+						vm.time= new Date(tmp).getTime()
+						newDate = new Date(vm.time).toDateString(); 
+					 }
+					
+				});
+				
+				// system time
+				Bmob.timestamp().then(res => {
+				  var tmp1 = res.datetime
+				  vm.stime= new Date(tmp1).getTime();
+				  if (vm.stime>vm.time && vm.time!="" && vm.stime!=""){
+				  	vm.details = "有效期："+ newDate +"，请续费"
+				  }
+				})
+				
+				
+				
+				
+				// account and password
+				const query1 = Bmob.Query("Account");
+				query1.select("account");
+				query1.order("-createdAt");
+				query1.find().then(res => {
+					if (vm.stime<=vm.time && vm.time!="" && vm.stime!=""){
+						vm.details = res[0].account
+					}
+				});
+				
+				
+				
+				
+				vm.vis = true;
+				
+				
+			} 
+			
+			 
+			
+			
+			
+		</script>
+	</body>
+</html>
