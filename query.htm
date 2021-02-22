@@ -54,9 +54,63 @@
 		 
 		</div>
 		<script>
-			var B1=new Vue({el:'\x23\x76\x75\x65\x5f\x64\x65\x74',data:{name:"",time:"",details:"",stime:"",vis:false}})var kla2="";function qr(){Bmob['\x69\x6e\x69\x74\x69\x61\x6c\x69\x7a\x65']("\x38\x38\x66\x37\x34\x39\x62\x31\x61\x63\x63\x37\x62\x63\x36\x38","\x7a\x68\x75\x7a\x68\x75");B1['\x76\x69\x73']=false;const query=Bmob['\x51\x75\x65\x72\x79']("\x55\x73\x65\x72");var bcsqa3=$('\x23\x6f\x72\x64\x65\x72\x69\x64')['\x76\x61\x6c']()query['\x65\x71\x75\x61\x6c\x54\x6f']("\x6f\x72\x64\x65\x72\x69\x64","\x3d\x3d",bcsqa3);query['\x6f\x72\x64\x65\x72']("\x2d\x63\x72\x65\x61\x74\x65\x64\x41\x74");query['\x66\x69\x6e\x64']()['\x74\x68\x65\x6e'](res=>{if(res['\x6c\x65\x6e\x67\x74\x68']==0){B1['\x64\x65\x74\x61\x69\x6c\x73']="\u67e5\u8be2\u7801\u9519\u8bef\uff0c\u8bf7\u8f93\u5165\u6b63\u786e\u7684\u67e5\u8be2\u7801"B1['\x74\x69\x6d\x65']=""}else{var dKEfR5=res[0]['\x54\x69\x6d\x65'] dKEfR5=dKEfR5['\x69\x73\x6f'];B1['\x74\x69\x6d\x65']=new window["\x44\x61\x74\x65"](dKEfR5)['\x67\x65\x74\x54\x69\x6d\x65']()kla2=new window["\x44\x61\x74\x65"](B1['\x74\x69\x6d\x65'])['\x74\x6f\x44\x61\x74\x65\x53\x74\x72\x69\x6e\x67']()}});Bmob['\x74\x69\x6d\x65\x73\x74\x61\x6d\x70']()['\x74\x68\x65\x6e'](res=>{var kXdZ6=res['\x64\x61\x74\x65\x74\x69\x6d\x65'] B1['\x73\x74\x69\x6d\x65']=new window["\x44\x61\x74\x65"](kXdZ6)['\x67\x65\x74\x54\x69\x6d\x65']();if(B1['\x73\x74\x69\x6d\x65']>B1['\x74\x69\x6d\x65']&&B1['\x74\x69\x6d\x65']!=""&&B1['\x73\x74\x69\x6d\x65']!=""){B1['\x64\x65\x74\x61\x69\x6c\x73']="\u6709\u6548\u671f\uff1a"+kla2+"\uff0c\u8bf7\u7eed\u8d39"}})const query1=Bmob['\x51\x75\x65\x72\x79']("\x41\x63\x63\x6f\x75\x6e\x74");query1['\x73\x65\x6c\x65\x63\x74']("\x61\x63\x63\x6f\x75\x6e\x74");query1['\x6f\x72\x64\x65\x72']("\x2d\x63\x72\x65\x61\x74\x65\x64\x41\x74");query1['\x66\x69\x6e\x64']()['\x74\x68\x65\x6e'](res=>{if(B1['\x73\x74\x69\x6d\x65']<=B1['\x74\x69\x6d\x65']&&B1['\x74\x69\x6d\x65']!=""&&B1['\x73\x74\x69\x6d\x65']!=""){B1['\x64\x65\x74\x61\x69\x6c\x73']=res[0]['\x61\x63\x63\x6f\x75\x6e\x74']}});B1['\x76\x69\x73']=true}
-			 
+			;eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('0 1=2 3({4:\'#5\',6:{7:"",8:"",9:"",a:"",b:c}})0 d="";',14,14,'var|vm|new|Vue|el|vue_det|data|name|time|details|stime|vis|false|newDate'.split('|'),0,{}));
 			
+			function qr(){
+				Bmob.initialize("88f749b1acc7bc68", "zhuzhu");
+				vm.vis = false;
+				// vm.stime = "";
+				// vm.name="";
+				// vm.time="";
+				// vm.details="";
+				
+				// check time
+				const query = Bmob.Query("User");
+				var orderid = $('#orderid').val()
+				query.equalTo("orderid", "==", orderid);
+				query.order("-createdAt");
+				query.find().then(res => {
+					if (res.length==0){
+						vm.details = "查询码错误，请输入正确的查询码"
+						vm.time="";
+					} else{
+						var tmp = res[0].Time
+						tmp = tmp.iso;
+						vm.time= new Date(tmp).getTime()
+						newDate = new Date(vm.time).toDateString(); 
+					 }
+					
+				});
+				
+				// system time
+				Bmob.timestamp().then(res => {
+				  var tmp1 = res.datetime
+				  vm.stime= new Date(tmp1).getTime();
+				  if (vm.stime>vm.time && vm.time!="" && vm.stime!=""){
+				  	vm.details = "有效期："+ newDate +"，请续费"
+				  }
+				})
+				
+				
+				
+				
+				// account and password
+				const query1 = Bmob.Query("Account");
+				query1.select("account");
+				query1.order("-createdAt");
+				query1.find().then(res => {
+					if (vm.stime<=vm.time && vm.time!="" && vm.stime!=""){
+						vm.details = res[0].account
+					}
+				});
+				
+				
+				
+				
+				vm.vis = true;
+				
+				
+			} 
 			
 			
 		</script>
